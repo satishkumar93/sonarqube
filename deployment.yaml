@@ -1,0 +1,73 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sonarqube-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: sonarqube
+  template:
+    metadata:
+      labels:
+        app: sonarqube
+    spec:
+      containers:
+        - name: sonarqube
+          image: sonarqube:9.8.0-community
+          ports:
+            - containerPort: 9000
+          volumeMounts:
+            - name: jdbc-driver
+              mountPath: /opt/jdbc
+          env:
+            - name: SONARQUBE_JDBC_URL
+              value: jdbc:sqlserver://192.168.0.3:1433/SonarQube
+            - name: SONARQUBE_JDBC_USERNAME
+              value: APP_SONARQUBE
+            - name: SONARQUBE_JDBC_PASSWORD
+              value: FehKroim54
+      volumes:
+        - name: jdbc-driver
+          configMap:
+            name: jdbc-driver
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: jdbc-driver
+data:
+  mssql-jdbc-driver.jar: |
+    [binary data of Microsoft JDBC Driver jar file]
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: sonarqube-service
+spec:
+  selector:
+    app: sonarqube
+  ports:
+    - name: http
+      port: 9000
+      targetPort: 9000
+  type: ClusterIP
+
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+name: allow-egress-to-mssql
+spec:
+podSelector: {}
+policyTypes:
+
+Egress
+egress:
+to:
+ipBlock:
+cidr: 0.0.0.0/0
+except:
+192.169.0.3/32
+ports:
+port: 1433
