@@ -1,13 +1,13 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: myapp-argo-application3
+  name: Sonarqube
   namespace: argocd
 spec:
   project: default
 
   source:
-    repoURL: https://gitlab.com/srinivasoggi/sonarqube.git
+    repoURL: https://github.com/satishkumar93/sonarqube.git
     targetRevision: HEAD
     path: .
   destination: 
