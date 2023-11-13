@@ -22,7 +22,7 @@ spec:
               mountPath: /opt/jdbc
           env:
             - name: SONARQUBE_JDBC_URL
-              value: jdbc:sqlserver://192.168.0.3:1433/SonarQube
+              value: jdbc:sqlserver://74.235.126.117:1433/SonarQube
             - name: SONARQUBE_JDBC_USERNAME
               value: APP_SONARQUBE
             - name: SONARQUBE_JDBC_PASSWORD
